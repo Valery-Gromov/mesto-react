@@ -9,7 +9,7 @@ function Card(props) {
 
   return (
     <li className="elements__item element" >
-        <img src={image} alt="фотография" className="element__photo" onClick={handleClick} />
+        <img src={image} alt={title} className="element__photo" onClick={handleClick} />
         <div className="element__content">
             <h2 className="element__discription">{title}</h2>
             <div className="element__like-container">
