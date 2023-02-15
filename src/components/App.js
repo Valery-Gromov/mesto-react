@@ -13,7 +13,6 @@ import { api } from '../utils/Api';
 
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-
 function App() {
     const [isEditPopupIsOpen, setIsEditPopupIsOpen] = useState(false);
     const [isEditAvatarIsOpen, setIsEditAvatarIsOpen] = useState(false);
@@ -137,8 +136,6 @@ function App() {
 
     }
 
-
-
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <Header />
@@ -148,22 +145,8 @@ function App() {
             <EditAvatarPopup isOpen={isEditAvatarIsOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
             <EditProfilePopup isOpen={isEditPopupIsOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
             <AddPlacePopup isOpen={isAddPlaceIsOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
-            
-
             <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
-
-
-            <div className="popup popup_type_confirm">
-                <div className="popup__container">
-                    <h2 className="popup__header">Вы уверены?</h2>
-                    <form name="popup-confirm" className="popup__form popup__form_type_confirm" noValidate>
-                        <button type="submit" className="popup__save popup__save_place_confirm">Да</button>
-                    </form>
-                    <button className="popup__close popup__close_place_add item-animation"><img src={closePopupButtonImage}
-                        alt="закрыть" className="popup__close-cross" /></button>
-                </div>
-            </div>
         </CurrentUserContext.Provider>
     );
 }
