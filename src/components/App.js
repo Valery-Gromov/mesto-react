@@ -1,10 +1,11 @@
-import closePopupButtonImage from '../images/button__cross.svg'
 import { useEffect, useState } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import imgSuccess from '../images/img-success.svg';
+import imgFail from '../images/img-fail.svg';
 
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
@@ -12,24 +13,37 @@ import AddPlacePopup from './AddPlacePopup';
 import { api } from '../utils/Api';
 
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import Login from './Login';
+import Register from './Register';
+import ProtectedRoute from './ProtectedRoute';
+import InfoTooltip from './InfoTooltip'
+import * as mestoAuth from '../mestoAuth.js'
 
 function App() {
     const [isEditPopupIsOpen, setIsEditPopupIsOpen] = useState(false);
     const [isEditAvatarIsOpen, setIsEditAvatarIsOpen] = useState(false);
     const [isAddPlaceIsOpen, setIsAddPlaceIsOpen] = useState(false);
+    const [isInfoTooltipIsOpen, setIsInfoTooltipIsOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState({});
     const [currentUser, setCurrentUser] = useState({});
     const [cards, setCards] = useState([]);
+    const [infoTooltipData, setInfoTooltipData] = useState({
+        image: '',
+        text: ''
+    });
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    const navigate = useNavigate();
 
     // Запрос данных профиля с сервера
     useEffect(() => {
         api.getProfile()
-        .then(userData => {
-            setCurrentUser(userData)
-        })
-        .catch(err => {
-            console.log(err);
-        });
+            .then(userData => {
+                setCurrentUser(userData)
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }, []);
 
     // Запрос карточек с сервера
@@ -45,6 +59,22 @@ function App() {
             });
     }, []);
 
+    // Проверка токена
+    useEffect(() => {
+        checkToken()
+    }, []);
+
+    function checkToken() {
+        const jwt = localStorage.getItem('token');
+
+        if (jwt) {
+            mestoAuth.getToken(jwt)
+                .then(() => {
+                    setLoggedIn(true);
+                    navigate('/main', { replace: true });
+                });
+        };
+    };
 
     function handleEditProfileClick() {
         setIsEditPopupIsOpen(true);
@@ -56,14 +86,19 @@ function App() {
     function handleAddPlaceClick() {
         setIsAddPlaceIsOpen(true);
     };
+    function handleInfoTooltipIsOpen() {
+        setIsInfoTooltipIsOpen(true)
+    };
+
     function handleCardClick(card) {
         setSelectedCard(card);
-    }
+    };
 
     function closeAllPopups() {
         setIsEditPopupIsOpen(false);
         setIsEditAvatarIsOpen(false);
         setIsAddPlaceIsOpen(false);
+        setIsInfoTooltipIsOpen(false);
         setSelectedCard({});
     };
 
@@ -75,7 +110,7 @@ function App() {
             })
             .catch(err => {
                 console.log(err);
-            }) 
+            })
     };
 
     function handleUpdateAvatar(data) {
@@ -103,23 +138,23 @@ function App() {
     function handleCardLike(card) {
         // Снова проверяем, есть ли уже лайк на этой карточке
         const isLiked = card.likes.some(i => i._id === currentUser._id);
-        
+
         if (!isLiked) {
             api.addLike(card._id)
-            .then(newCard => {
-                setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-            })
-            .catch(err => {
-                console.log(err);
-            })
+                .then(newCard => {
+                    setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+                })
+                .catch(err => {
+                    console.log(err);
+                })
         } else {
             api.deleteLike(card._id)
-            .then(newCard => {
-                setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-            })
-            .catch(err => {
-                console.log(err);
-            })
+                .then(newCard => {
+                    setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+                })
+                .catch(err => {
+                    console.log(err);
+                })
         }
 
     };
@@ -127,25 +162,58 @@ function App() {
     function handleCardDelete(card) {
 
         api.deleteCard(card._id)
-        .then(res => {
-            setCards((state) => state.filter((c) => c._id !== card._id))
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            .then(res => {
+                setCards((state) => state.filter((c) => c._id !== card._id))
+            })
+            .catch(err => {
+                console.log(err);
+            })
 
+    }
+
+    function handleLogin() {
+        setLoggedIn(true);
     }
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
-            <Header />
-            <Main cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} onCardClick={handleCardClick} handleEditAvatarClick={handleEditAvatarClick} handleEditProfileClick={handleEditProfileClick} handleAddPlaceClick={handleAddPlaceClick} />
+            <Header loggedIn={loggedIn} />
+            <Routes>
+                <Route
+                    path="/main"
+                    element={<ProtectedRoute
+                        loggedIn={loggedIn}
+                        component={Main}
+                        cards={cards}
+                        onCardLike={handleCardLike}
+                        onCardDelete={handleCardDelete}
+                        onCardClick={handleCardClick}
+                        handleEditAvatarClick={handleEditAvatarClick}
+                        handleEditProfileClick={handleEditProfileClick}
+                        handleAddPlaceClick={handleAddPlaceClick}
+                    />}
+                />
+                <Route
+                    path="/signup"
+                    element={<Register setInfoTooltipData={setInfoTooltipData} handleInfoTooltipIsOpen={handleInfoTooltipIsOpen} />}
+                />
+                <Route
+                    path="/signin"
+                    element={<Login setInfoTooltipData={setInfoTooltipData} handleInfoTooltipIsOpen={handleInfoTooltipIsOpen} handleLogin={handleLogin} loggedIn={loggedIn} />}
+                />
+                <Route
+                    path="*"
+                    element={loggedIn ? <Navigate to="/main" /> : <Navigate to="/signin" />}
+                />
+            </Routes>
             <Footer />
 
             <EditAvatarPopup isOpen={isEditAvatarIsOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
             <EditProfilePopup isOpen={isEditPopupIsOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
             <AddPlacePopup isOpen={isAddPlaceIsOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
             <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+            <InfoTooltip isOpen={isInfoTooltipIsOpen} image={infoTooltipData.image} text={infoTooltipData.text} onClose={closeAllPopups} />
+            {/* <InfoTooltip image={imgFail} text="Что-то пошло не так! Попробуйте ещё раз." /> */}
 
         </CurrentUserContext.Provider>
     );

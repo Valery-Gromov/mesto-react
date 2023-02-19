@@ -3,6 +3,8 @@
 @import url('vendor/fonts/inter.css');
 @import url('blocks/header/header.css');
 @import url('blocks/header/__logo/header__logo.css');
+@import url('blocks/header/__menu/header__menu.css');
+@import url('blocks/header/__button/header__button.css');
 @import url('blocks/profile/profile.css');
 @import url('blocks/profile/__avatar-container/profile__avatar-container.css');
 @import url('blocks/profile/__avatar/profile__avatar.css');
@@ -58,8 +60,17 @@
 @import url('blocks/popup/__field/_type/popup__field_type_place-name.css');
 @import url('blocks/popup/__field/_type/popup__field_type_place-link.css');
 @import url('blocks/popup/__container/_type/popup__container_type_image.css');
+@import url('blocks/popup/__container/_type/popup__container_type_infotooltip.css');
 @import url('blocks/popup/__image/popup__image.css');
 @import url('blocks/popup/_type/popup_type_confirm.css');
 @import url('blocks/item-animation/item-animation.css');
+@import url('blocks/sign-up/sign-up.css');
+@import url('blocks/sign-up/__form/sign-up__form.css');
+@import url('blocks/sign-up/__title/sign-up__title.css');
+@import url('blocks/sign-up/__input/sign-up__input.css');
+@import url('blocks/sign-up/__input/_password/sign-up__input_password.css');
+@import url('blocks/sign-up/__submit/sign-up__submit.css');
+@import url('blocks/sign-up/__text/sign-up__text.css');
+@import url('blocks/sign-up/__link/sign-up__link.css');
 
 

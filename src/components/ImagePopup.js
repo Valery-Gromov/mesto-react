@@ -1,5 +1,6 @@
 import closePopupButtonImage from '../images/button__cross.svg'
 
+
 function ImagePopup(props) {
   const {card, onClose} = props;
 
