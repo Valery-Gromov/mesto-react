@@ -30,11 +30,12 @@ function Register(props) {
     console.log(userEmail, userPassword);
 
     mestoAuth.register(userEmail, userPassword)
-      .then(() => {
+      .then((res) => {
         props.setInfoTooltipData({
           image: imgSuccess,
           text: 'Вы успешно зарегистрировались!'
         });
+        console.log(res);
         props.handleInfoTooltipIsOpen();
         navigate('/signin', {replace: true});
       })

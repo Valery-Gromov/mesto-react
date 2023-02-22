@@ -5,7 +5,7 @@ const getResponse = (res) => {
   };
 
 export const register = (userEmail, userPassword) => {
-    console.log(userEmail, userPassword);
+    console.log('userEmail', userEmail, 'password', userPassword);
 
     return fetch(`${BASE_URL}/signup`, {
         method: 'POST',
@@ -22,7 +22,7 @@ export const register = (userEmail, userPassword) => {
 }
 
 export const authorize = (userEmail, userPassword) => {
-    console.log(userEmail, userPassword);
+    console.log('userEmail', userEmail, 'password', userPassword);
 
     return fetch(`${BASE_URL}/signin`, {
         method: 'POST',
@@ -31,8 +31,8 @@ export const authorize = (userEmail, userPassword) => {
             'Accept': 'application/json'
         },
         body: JSON.stringify({
-            "password": userEmail,
-            "email": userPassword
+            "email": userEmail,
+            "password": userPassword
         })
     })
     .then(getResponse)

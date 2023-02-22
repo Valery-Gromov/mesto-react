@@ -25,7 +25,7 @@ function Login(props) {
       const { userEmail, userPassword } = formValue;
 
       if (!userEmail || !userPassword) {
-         return 
+         return
       }
 
       mestoAuth.authorize(userEmail, userPassword)
@@ -38,7 +38,7 @@ function Login(props) {
                   userPassword: ''
                })
                props.handleLogin();
-               navigate('/main', {replace: true});
+               navigate('/main', { replace: true });
 
             } else {
                return;
@@ -50,8 +50,8 @@ function Login(props) {
             props.setInfoTooltipData({
                image: imgFail,
                text: `Что-то пошло не так! ${err}. Попробуйте ещё раз.`
-             });
-             props.handleInfoTooltipIsOpen();
+            });
+            props.handleInfoTooltipIsOpen();
          })
    }
 
