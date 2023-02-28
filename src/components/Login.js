@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as mestoAuth from '../mestoAuth.js';
-import imgFail from '../images/img-fail.svg';
 
 function Login(props) {
+   
    const [formValue, setFormValue] = useState({
       userEmail: '',
       userPassword: ''
@@ -28,31 +27,12 @@ function Login(props) {
          return
       }
 
-      mestoAuth.authorize(userEmail, userPassword)
-         .then((res) => {
-            if (res.token) {
-               console.log(res);
-               localStorage.setItem('token', res.token);
-               setFormValue({
-                  userEmail: '',
-                  userPassword: ''
-               })
-               props.handleLogin();
-               navigate('/main', { replace: true });
+      props.handleLoginSubmit(userEmail, userPassword);
 
-            } else {
-               return;
-            }
-
-         })
-         .catch((err) => {
-            console.log(err);
-            props.setInfoTooltipData({
-               image: imgFail,
-               text: `Что-то пошло не так! ${err}. Попробуйте ещё раз.`
-            });
-            props.handleInfoTooltipIsOpen();
-         })
+      setFormValue({
+         userEmail: '',
+         userPassword: ''
+      });
    }
 
    return (

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import imgSuccess from '../images/img-success.svg';
 import imgFail from '../images/img-fail.svg';
 
 import Header from './Header';
@@ -17,7 +16,7 @@ import Login from './Login';
 import Register from './Register';
 import ProtectedRoute from './ProtectedRoute';
 import InfoTooltip from './InfoTooltip'
-import * as mestoAuth from '../mestoAuth.js'
+import * as mestoAuth from '../utils/mestoAuth.js'
 
 function App() {
     const [isEditPopupIsOpen, setIsEditPopupIsOpen] = useState(false);
@@ -32,6 +31,11 @@ function App() {
         text: ''
     });
     const [loggedIn, setLoggedIn] = useState(false);
+    const [loginFormValue, setLoginFormValue] = useState({
+        userEmail: '',
+        userPassword: ''
+    });
+    const [currentUserEmail, setCurrentUserEmail] = useState('');
 
     const navigate = useNavigate();
 
@@ -72,9 +76,39 @@ function App() {
                 .then(() => {
                     setLoggedIn(true);
                     navigate('/main', { replace: true });
+                })
+                .catch(err => {
+                    console.log(err);
                 });
         };
     };
+
+    function handleLoginSubmit(userEmail, userPassword) {
+
+        mestoAuth.authorize(userEmail, userPassword)
+            .then((res) => {
+                if (res.token) {
+                    console.log(res);
+                    localStorage.setItem('token', res.token);
+                    handleLogin();
+                    navigate('/main', { replace: true });
+
+                    setCurrentUserEmail(userEmail);
+
+                } else {
+                    return;
+                }
+
+            })
+            .catch((err) => {
+                console.log(err);
+                setInfoTooltipData({
+                    image: imgFail,
+                    text: `Что-то пошло не так! ${err}. Попробуйте ещё раз.`
+                });
+                handleInfoTooltipIsOpen();
+            })
+    }
 
     function handleEditProfileClick() {
         setIsEditPopupIsOpen(true);
@@ -177,7 +211,7 @@ function App() {
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
-            <Header loggedIn={loggedIn} />
+            <Header loggedIn={loggedIn} currentUserEmail={currentUserEmail} />
             <Routes>
                 <Route
                     path="/main"
@@ -199,7 +233,7 @@ function App() {
                 />
                 <Route
                     path="/signin"
-                    element={<Login setInfoTooltipData={setInfoTooltipData} handleInfoTooltipIsOpen={handleInfoTooltipIsOpen} handleLogin={handleLogin} loggedIn={loggedIn} />}
+                    element={<Login loginFormValue={loginFormValue} handleLoginSubmit={handleLoginSubmit} handleLogin={handleLogin} loggedIn={loggedIn} />}
                 />
                 <Route
                     path="*"

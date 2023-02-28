@@ -1,13 +1,15 @@
 import logo from '../images/logo__header.svg';
 import { Link, useNavigate } from 'react-router-dom';
 
-function Header() {
+function Header(props) {
   const navigate = useNavigate();
 
   function signOut(){
     localStorage.removeItem('token');
     navigate('/signin');
   }
+
+  console.log(props.currentUserEmail);
   
   return (
         <header className='header'>
@@ -21,6 +23,10 @@ function Header() {
                 {window.location.pathname === "/signin" && 
                 (<li>
                   <Link to="/signup" className='header__button'>Регистрация</Link>
+                </li>)}
+                {window.location.pathname === "/main" &&
+                (<li>
+                  <p onClick={signOut} className='header__button'>{props.currentUserEmail}</p>
                 </li>)}
                 {window.location.pathname === "/main" &&
                 (<li>

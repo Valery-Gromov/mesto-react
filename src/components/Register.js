@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-import * as mestoAuth from '../mestoAuth.js'
+import * as mestoAuth from '../utils/mestoAuth.js'
 import imgSuccess from '../images/img-success.svg';
 import imgFail from '../images/img-fail.svg';
 
