@@ -14,8 +14,8 @@ export const register = (userEmail, userPassword) => {
             'Accept': 'application/json'
         },
         body: JSON.stringify({
-            "password": userEmail,
-            "email": userPassword
+            "password": userPassword,
+            "email": userEmail
         })
     })
     .then(getResponse)

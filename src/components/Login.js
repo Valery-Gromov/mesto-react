@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import imgFail from '../images/img-fail.svg';
 
 function Login(props) {
-   
+
    const [formValue, setFormValue] = useState({
       userEmail: '',
       userPassword: ''
    });
 
-   const navigate = useNavigate();
+   console.log(formValue);
 
    const handleChange = (e) => {
       const { name, value } = e.target;
@@ -27,12 +27,22 @@ function Login(props) {
          return
       }
 
-      props.handleLoginSubmit(userEmail, userPassword);
+      props.handleLoginSubmit(userEmail, userPassword)
+         .then(() => {
+            setFormValue({
+               userEmail: '',
+               userPassword: ''
+            });
+         })
+         .catch((err) => {
+            console.log(err);
+            props.setInfoTooltipData({
+               image: imgFail,
+               text: `Что-то пошло не так! ${err}. Попробуйте ещё раз.`
+            });
+            props.handleInfoTooltipIsOpen();
+         })
 
-      setFormValue({
-         userEmail: '',
-         userPassword: ''
-      });
    }
 
    return (

@@ -9,7 +9,6 @@ function Header(props) {
     navigate('/signin');
   }
 
-  console.log(props.currentUserEmail);
   
   return (
         <header className='header'>
@@ -26,7 +25,7 @@ function Header(props) {
                 </li>)}
                 {window.location.pathname === "/main" &&
                 (<li>
-                  <p onClick={signOut} className='header__button'>{props.currentUserEmail}</p>
+                  <p className='header__login'>{props.currentUserEmail}</p>
                 </li>)}
                 {window.location.pathname === "/main" &&
                 (<li>

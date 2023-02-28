@@ -31,10 +31,6 @@ function App() {
         text: ''
     });
     const [loggedIn, setLoggedIn] = useState(false);
-    const [loginFormValue, setLoginFormValue] = useState({
-        userEmail: '',
-        userPassword: ''
-    });
     const [currentUserEmail, setCurrentUserEmail] = useState('');
 
     const navigate = useNavigate();
@@ -73,9 +69,10 @@ function App() {
 
         if (jwt) {
             mestoAuth.getToken(jwt)
-                .then(() => {
+                .then((res) => {
                     setLoggedIn(true);
                     navigate('/main', { replace: true });
+                    setCurrentUserEmail(res.data.email);
                 })
                 .catch(err => {
                     console.log(err);
@@ -85,28 +82,15 @@ function App() {
 
     function handleLoginSubmit(userEmail, userPassword) {
 
-        mestoAuth.authorize(userEmail, userPassword)
+        return mestoAuth.authorize(userEmail, userPassword)
             .then((res) => {
                 if (res.token) {
                     console.log(res);
                     localStorage.setItem('token', res.token);
                     handleLogin();
                     navigate('/main', { replace: true });
-
                     setCurrentUserEmail(userEmail);
-
-                } else {
-                    return;
                 }
-
-            })
-            .catch((err) => {
-                console.log(err);
-                setInfoTooltipData({
-                    image: imgFail,
-                    text: `Что-то пошло не так! ${err}. Попробуйте ещё раз.`
-                });
-                handleInfoTooltipIsOpen();
             })
     }
 
@@ -233,7 +217,7 @@ function App() {
                 />
                 <Route
                     path="/signin"
-                    element={<Login loginFormValue={loginFormValue} handleLoginSubmit={handleLoginSubmit} handleLogin={handleLogin} loggedIn={loggedIn} />}
+                    element={<Login setInfoTooltipData={setInfoTooltipData} handleInfoTooltipIsOpen={handleInfoTooltipIsOpen} handleLoginSubmit={handleLoginSubmit} handleLogin={handleLogin} loggedIn={loggedIn} />}
                 />
                 <Route
                     path="*"
